@@ -1,4 +1,4 @@
-namespace eatIT.Entity
+namespace eatIT.Database.Entity
 {
     public class UserEntity
     {

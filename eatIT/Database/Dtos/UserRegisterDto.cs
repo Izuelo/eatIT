@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace eatIT.Dtos
+namespace eatIT.Database.Dtos
 {
     public class UserRegisterDto
     {

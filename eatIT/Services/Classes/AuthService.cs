@@ -1,21 +1,22 @@
-using System.Threading.Tasks;
-using eatIT.Entity;
-using Microsoft.EntityFrameworkCore;
 
-namespace eatIT.Repository
+using eatIT.Database.Entity;
+using eatIT.Database.Repository.Interfaces;
+using eatIT.Services.Interfaces;
+
+namespace eatIT.Services.Classes
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthService:IAuthService
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly IAuthRepository _authRepository;
 
-        public AuthRepository(DatabaseContext databaseContext)
+        public AuthService(IAuthRepository authRepository)
         {
-            _databaseContext = databaseContext;
+            _authRepository = authRepository;
         }
-        
-        public async Task<UserEntity> Login(string username, string password)
+
+        public  UserEntity Login(string username, string password)
         {
-            var user = await _databaseContext.Users.FirstOrDefaultAsync(x => x.Username == username); //Get user from database.
+            var user =  _authRepository.GetByParam(x => x.Username == username); //Get user from database.
             if(user == null)
                 return null; // User does not exist.
 
@@ -36,7 +37,7 @@ namespace eatIT.Repository
             return true; //if no mismatches.
         }
 
-        public async Task<UserEntity> Register(UserEntity user, string password)
+        public  UserEntity Register(UserEntity user, string password)
         {
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -44,25 +45,22 @@ namespace eatIT.Repository
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _databaseContext.Users.AddAsync(user); // Adding the user to context of users.
-            await _databaseContext.SaveChangesAsync(); // Save changes to database.
+            _authRepository.Add(user); // Adding the user to context of users.
+           
 
             return user;
         }
         
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using(var hmac = new System.Security.Cryptography.HMACSHA512()){
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
+            using var hmac = new System.Security.Cryptography.HMACSHA512();
+            passwordSalt = hmac.Key;
+            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
         }
 
-        public async Task<bool> UserExists(string username)
+        public  bool UserExists(string username)
         {
-            if (await _databaseContext.Users.AnyAsync(x => x.Username == username))
-                return true;
-            return false;
+            return _authRepository.Any(x => x.Username == username);
         }
     }
 }

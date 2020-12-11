@@ -1,7 +1,7 @@
-using eatIT.Entity;
+using eatIT.Database.Entity;
 using Microsoft.EntityFrameworkCore;
 
-namespace eatIT
+namespace eatIT.Database
 {
     public class DatabaseContext : DbContext
     {
