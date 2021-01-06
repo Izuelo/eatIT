@@ -10,7 +10,7 @@ namespace eatIT.Database.Repository.Interfaces
 
         bool Any(Expression<Func<TEntity, bool>> expression);
 
-        TEntity Add(TEntity entity);
+        Task<TEntity> Add(TEntity entity);
 
         TEntity GetByParam(Expression<Func<TEntity, bool>> expression);
 

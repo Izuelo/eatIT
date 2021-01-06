@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using eatIT.Database;
+using eatIT.Database.Entity;
 using eatIT.Database.Repository.Classes;
 using eatIT.Database.Repository.Interfaces;
 using eatIT.Services.Classes;
@@ -35,8 +36,14 @@ namespace eatIT
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers();
+            services.AddTransient(typeof(IBaseRepository<>),typeof(BaseRepository<>));
+            
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICuisineService, CuisineService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddHttpClient<ISearchRestaurant, SearchRestaurant>();
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "eatIT", Version = "v1"}); });
             services.AddDbContext<DatabaseContext>(options =>
@@ -62,6 +69,11 @@ namespace eatIT
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "eatIT v1"));
             }
+            app.UseCors(
+                options => options.WithOrigins("http://localhost:3000")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+            );
 
             app.UseHttpsRedirection();
 

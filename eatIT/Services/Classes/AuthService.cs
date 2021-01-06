@@ -1,4 +1,5 @@
 
+using System.Threading.Tasks;
 using eatIT.Database.Entity;
 using eatIT.Database.Repository.Interfaces;
 using eatIT.Services.Interfaces;
@@ -14,7 +15,7 @@ namespace eatIT.Services.Classes
             _authRepository = authRepository;
         }
 
-        public  UserEntity Login(string username, string password)
+        public async Task<UserEntity> Login(string username, string password)
         {
             var user =  _authRepository.GetByParam(x => x.Username == username); //Get user from database.
             if(user == null)
@@ -37,15 +38,19 @@ namespace eatIT.Services.Classes
             return true; //if no mismatches.
         }
 
-        public  UserEntity Register(UserEntity user, string password)
+        public async Task<UserEntity> Register(string username, string password)
         {
+            var user = new UserEntity(){
+                Username = username
+            };
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
-
+            
+            
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            _authRepository.Add(user); // Adding the user to context of users.
+            await _authRepository.Add(user); // Adding the user to context of users.
            
 
             return user;

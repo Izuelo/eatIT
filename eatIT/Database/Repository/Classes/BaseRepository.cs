@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using eatIT.Database.Repository.Interfaces;
 
 namespace eatIT.Database.Repository.Classes
@@ -20,12 +21,19 @@ namespace eatIT.Database.Repository.Classes
              
         }
         
-        public TEntity Add(TEntity entity)
+        public async Task<TEntity> Add(TEntity entity)
         {
-            DatabaseContext.Set<TEntity>().Add(entity);
-            DatabaseContext.SaveChanges();
+            try
+            {
+                await DatabaseContext.Set<TEntity>().AddAsync(entity);
+                await DatabaseContext.SaveChangesAsync();
 
-            return entity;
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{nameof(entity)} could not be saved: {ex.Message}");
+            }
         }
         
         public TEntity GetByParam(Expression<Func<TEntity, bool>> expression)

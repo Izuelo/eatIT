@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eatIT.Controllers
 {
-    [Route("api/[controller]")]
+    
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -26,7 +26,7 @@ namespace eatIT.Controllers
         }
         
         [HttpPost("register")] //<host>/api/auth/register
-        public IActionResult Register([FromBody] UserRegisterDto userRegisterDto){ //Data Transfer Object containing username and password.
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto userRegisterDto){ //Data Transfer Object containing username and password.
             // validate request
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -35,20 +35,17 @@ namespace eatIT.Controllers
 
             if( _authService.UserExists(userRegisterDto.Username)) 
                 return BadRequest("Username is already taken");
+            
 
-            var userToCreate = new UserEntity{
-                Username = userRegisterDto.Username
-            };
-
-            var createUser =  _authService.Register(userToCreate, userRegisterDto.Password);
+            await _authService.Register(userRegisterDto.Username, userRegisterDto.Password);
 
             return StatusCode(201);
         }
         
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto userLoginDto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var userFromRepo =  _authService.Login(userLoginDto.Username.ToLower(), userLoginDto.Password);
+            var userFromRepo = await _authService.Login(userLoginDto.Username.ToLower(), userLoginDto.Password);
             if (userFromRepo == null) //User login failed
                 return Unauthorized();
 

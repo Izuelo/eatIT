@@ -9,7 +9,7 @@ namespace eatIT.Controllers
     [Route("api/[controller]")]
     public class UserController: ControllerBase
     {
-
+        //TODO: UserService
         private readonly DatabaseContext _dbContext;
 
         public UserController(DatabaseContext dbContext)
