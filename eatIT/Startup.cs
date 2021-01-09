@@ -43,6 +43,7 @@ namespace eatIT
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICuisineService, CuisineService>();
             services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IRestaurantService, RestaurantService>();
             services.AddHttpClient<ISearchRestaurant, SearchRestaurant>();
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "eatIT", Version = "v1"}); });

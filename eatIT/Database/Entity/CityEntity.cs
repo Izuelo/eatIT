@@ -7,16 +7,11 @@ namespace eatIT.Database.Entity
     public class CityEntity
     {
 
-        public int Id { get; set; }
-        public string City { get; set; }
+        public int CityEntityId { get; set; }
+        public string CityName { get; set; }
         
         public ICollection<RestaurantEntity> Restaurants { get; set; }
-
-        public CityEntity(int id, string city)
-        {
-            Id = id;
-            City = city;
-        }
+        
         
     }
 }

@@ -21,15 +21,15 @@ namespace eatIT.Migrations
 
             modelBuilder.Entity("eatIT.Database.Entity.CityEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CityEntityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<string>("City")
+                    b.Property<string>("CityName")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("CityEntityId");
 
                     b.ToTable("Cities");
                 });

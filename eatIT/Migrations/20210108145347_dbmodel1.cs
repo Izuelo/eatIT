@@ -12,13 +12,13 @@ namespace eatIT.Migrations
                 name: "Cities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    CityEntityId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    City = table.Column<string>(type: "text", nullable: true)
+                    CityName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cities", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.CityEntityId);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,7 +75,7 @@ namespace eatIT.Migrations
                         name: "FK_Restaurants_Cities_CityEntityId",
                         column: x => x.CityEntityId,
                         principalTable: "Cities",
-                        principalColumn: "Id",
+                        principalColumn: "CityEntityId",
                         onDelete: ReferentialAction.Cascade);
                 });
 

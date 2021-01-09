@@ -10,7 +10,7 @@ using eatIT.Database;
 namespace eatIT.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210103190554_dbmodel1")]
+    [Migration("20210108145347_dbmodel1")]
     partial class dbmodel1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,15 +23,15 @@ namespace eatIT.Migrations
 
             modelBuilder.Entity("eatIT.Database.Entity.CityEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CityEntityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<string>("City")
+                    b.Property<string>("CityName")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("CityEntityId");
 
                     b.ToTable("Cities");
                 });

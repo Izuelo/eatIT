@@ -17,8 +17,8 @@ namespace eatIT.Services.Classes
         public List<CityDto> GetAllCities()
         {
             var cities =  _dbContext.Cities.Select(c => new CityDto(){
-                CityId = c.Id ,
-                CityName = c.City
+                CityId = c.CityEntityId ,
+                CityName = c.CityName
             }).ToList();
             
             return cities;
