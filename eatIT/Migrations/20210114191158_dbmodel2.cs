@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace eatIT.Migrations
 {
-    public partial class dbmodel1 : Migration
+    public partial class dbmodel2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,7 +38,7 @@ namespace eatIT.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
+                    UserEntityId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Username = table.Column<string>(type: "text", nullable: true),
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: true),
@@ -46,7 +46,7 @@ namespace eatIT.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.UserEntityId);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +63,7 @@ namespace eatIT.Migrations
                     OpenHours = table.Column<string>(type: "text", nullable: true),
                     Thumbnail = table.Column<string>(type: "text", nullable: true),
                     FeaturedIMG = table.Column<string>(type: "text", nullable: true),
-                    Rating = table.Column<string>(type: "text", nullable: true),
+                    Rating = table.Column<float>(type: "real", nullable: false),
                     RatingText = table.Column<string>(type: "text", nullable: true),
                     Votes = table.Column<int>(type: "integer", nullable: false),
                     CityEntityId = table.Column<int>(type: "integer", nullable: false)
@@ -76,6 +76,30 @@ namespace eatIT.Migrations
                         column: x => x.CityEntityId,
                         principalTable: "Cities",
                         principalColumn: "CityEntityId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LikedRestaurant",
+                columns: table => new
+                {
+                    UserEntityId = table.Column<int>(type: "integer", nullable: false),
+                    RestaurantEntityId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LikedRestaurant", x => new { x.UserEntityId, x.RestaurantEntityId });
+                    table.ForeignKey(
+                        name: "FK_LikedRestaurant_Restaurants_RestaurantEntityId",
+                        column: x => x.RestaurantEntityId,
+                        principalTable: "Restaurants",
+                        principalColumn: "RestaurantEntityId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LikedRestaurant_Users_UserEntityId",
+                        column: x => x.UserEntityId,
+                        principalTable: "Users",
+                        principalColumn: "UserEntityId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -104,6 +128,11 @@ namespace eatIT.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_LikedRestaurant_RestaurantEntityId",
+                table: "LikedRestaurant",
+                column: "RestaurantEntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RestaurantCuisines_RestaurantEntityId",
                 table: "RestaurantCuisines",
                 column: "RestaurantEntityId");
@@ -116,6 +145,9 @@ namespace eatIT.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "LikedRestaurant");
+
             migrationBuilder.DropTable(
                 name: "RestaurantCuisines");
 

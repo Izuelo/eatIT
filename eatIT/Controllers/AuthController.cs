@@ -13,7 +13,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eatIT.Controllers
 {
-    
+    [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -55,7 +56,7 @@ namespace eatIT.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.NameIdentifier,userFromRepo.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier,userFromRepo.UserEntityId.ToString()),
                     new Claim(ClaimTypes.Name, userFromRepo.Username)
                 }),
                 Expires = DateTime.Now.AddDays(1),
@@ -65,7 +66,7 @@ namespace eatIT.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { tokenString });
+            return Ok(new { tokenString,userFromRepo.UserEntityId });
         }
     }
 }

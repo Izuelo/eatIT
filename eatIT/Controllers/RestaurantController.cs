@@ -18,15 +18,22 @@ namespace eatIT.Controllers
         [HttpGet]
         public IActionResult GetRestaurantList(string cityName, string cuisine, int rating)
         {
-            var values = _restaurantService.GetRestaurantSearchResult(cityName, cuisine, rating);
-            return Ok(values);
+            var searchResult = _restaurantService.GetRestaurantSearchResult(cityName, cuisine, rating);
+            return Ok(searchResult);
         }
         
         [HttpGet("{restaurantId}")]
         public async Task<IActionResult> GetRestaurantById( int restaurantId)
         {
-            var values = await _restaurantService.GetRestaurantById(restaurantId);
-            return Ok(values);
+            var restaurantById = await _restaurantService.GetRestaurantById(restaurantId);
+            return Ok(restaurantById);
+        }
+        
+        [HttpGet("top")]
+        public IActionResult GetTopRestaurants(string cityName)
+        {
+            var topRestaurants = _restaurantService.GetTopRestaurants(cityName);
+            return Ok(topRestaurants);
         }
     }
 }

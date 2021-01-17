@@ -9,5 +9,6 @@ namespace eatIT.Services.Interfaces
     {
         public List<RestaurantEntity> GetRestaurantSearchResult(string cityName, string cuisine, int rating);
         public Task<RestaurantEntity> GetRestaurantById(int restaurantId);
+        public List<RestaurantEntity> GetTopRestaurants(string cityName);
     }
 }

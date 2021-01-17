@@ -41,6 +41,7 @@ namespace eatIT
             services.AddTransient(typeof(IBaseRepository<>),typeof(BaseRepository<>));
             
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICuisineService, CuisineService>();
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IRestaurantService, RestaurantService>();

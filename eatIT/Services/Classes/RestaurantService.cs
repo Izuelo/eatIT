@@ -21,7 +21,7 @@ namespace eatIT.Services.Classes
         public List<RestaurantEntity> GetRestaurantSearchResult(string cityName, string cuisine, int rating)
         {
             var restaurantList= _databaseContext.Restaurants
-                .Where(r=>r.City.CityName==cityName && r.Cuisines.Any(c=>c.CuisineEntity.CuisineName==cuisine)).ToList();
+                .Where(r=>r.City.CityName==cityName && r.Cuisines.Any(c=>c.CuisineEntity.CuisineName==cuisine)&&r.Rating>= rating).ToList();
             return restaurantList;
         }
 
@@ -30,6 +30,12 @@ namespace eatIT.Services.Classes
             var restaurant =
                 _databaseContext.Restaurants.FirstOrDefaultAsync(r => r.RestaurantEntityId == restaurantId);
             return restaurant;
+        }
+
+        public List<RestaurantEntity> GetTopRestaurants(string cityName)
+        {
+            var restaurantList= _databaseContext.Restaurants.Where(r=>r.City.CityName==cityName).OrderByDescending(r => r.Rating).Take(10).ToList();
+            return restaurantList;
         }
     }
 }

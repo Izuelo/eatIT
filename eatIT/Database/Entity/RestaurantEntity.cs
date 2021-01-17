@@ -19,7 +19,7 @@ namespace eatIT.Database.Entity
         public string Thumbnail { get; set; }
 
         public string FeaturedIMG { get; set; }
-        public string Rating { get; set; }
+        public float Rating { get; set; }
 
         public string RatingText { get; set; }
 
@@ -30,10 +30,12 @@ namespace eatIT.Database.Entity
         public CityEntity City { get; set; }
 
         public ICollection<RestaurantCuisinesEntity> Cuisines { get; set; }
+        
+        public ICollection<LikedRestaurantsEntity> Users { get; set; }
 
 
         public RestaurantEntity(int restaurantEntityId, string name, string address, string locality, string latitude,
-            string longitude, string openHours, string thumbnail, string featuredImg, string rating, string ratingText,
+            string longitude, string openHours, string thumbnail, string featuredImg, float rating, string ratingText,
             int votes, int cityEntityId)
         {
             RestaurantEntityId = restaurantEntityId;

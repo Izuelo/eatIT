@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -50,7 +51,7 @@ namespace eatIT.Services.Classes
                         x.restaurant.timings,
                         x.restaurant.thumb,
                         x.restaurant.featured_image,
-                        x.restaurant.user_rating.aggregate_rating,
+                        float.Parse(x.restaurant.user_rating.aggregate_rating, CultureInfo.InvariantCulture.NumberFormat),
                         x.restaurant.user_rating.rating_text,
                         x.restaurant.user_rating.votes,
                         x.restaurant.location.city_id

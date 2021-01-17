@@ -10,8 +10,8 @@ using eatIT.Database;
 namespace eatIT.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210108145347_dbmodel1")]
-    partial class dbmodel1
+    [Migration("20210114191158_dbmodel2")]
+    partial class dbmodel2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,21 @@ namespace eatIT.Migrations
                     b.HasKey("CuisineEntityId");
 
                     b.ToTable("Cuisines");
+                });
+
+            modelBuilder.Entity("eatIT.Database.Entity.LikedRestaurantsEntity", b =>
+                {
+                    b.Property<int>("UserEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RestaurantEntityId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserEntityId", "RestaurantEntityId");
+
+                    b.HasIndex("RestaurantEntityId");
+
+                    b.ToTable("LikedRestaurant");
                 });
 
             modelBuilder.Entity("eatIT.Database.Entity.RestaurantCuisinesEntity", b =>
@@ -97,8 +112,8 @@ namespace eatIT.Migrations
                     b.Property<string>("OpenHours")
                         .HasColumnType("text");
 
-                    b.Property<string>("Rating")
-                        .HasColumnType("text");
+                    b.Property<float>("Rating")
+                        .HasColumnType("real");
 
                     b.Property<string>("RatingText")
                         .HasColumnType("text");
@@ -118,7 +133,7 @@ namespace eatIT.Migrations
 
             modelBuilder.Entity("eatIT.Database.Entity.UserEntity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserEntityId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
@@ -132,9 +147,28 @@ namespace eatIT.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserEntityId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("eatIT.Database.Entity.LikedRestaurantsEntity", b =>
+                {
+                    b.HasOne("eatIT.Database.Entity.RestaurantEntity", "RestaurantEntity")
+                        .WithMany("Users")
+                        .HasForeignKey("RestaurantEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eatIT.Database.Entity.UserEntity", "UserEntity")
+                        .WithMany("Restaurants")
+                        .HasForeignKey("UserEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RestaurantEntity");
+
+                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("eatIT.Database.Entity.RestaurantCuisinesEntity", b =>
@@ -180,6 +214,13 @@ namespace eatIT.Migrations
             modelBuilder.Entity("eatIT.Database.Entity.RestaurantEntity", b =>
                 {
                     b.Navigation("Cuisines");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("eatIT.Database.Entity.UserEntity", b =>
+                {
+                    b.Navigation("Restaurants");
                 });
 #pragma warning restore 612, 618
         }
