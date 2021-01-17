@@ -3,24 +3,26 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using eatIT.Dtos;
-using eatIT.Entity;
-using eatIT.Repository;
+using eatIT.Database.Dtos;
+using eatIT.Database.Entity;
+using eatIT.Database.Repository.Interfaces;
+using eatIT.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace eatIT.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthRepository _repo;
+        private readonly IAuthService _authService;
         private readonly IConfiguration _config;
-        
-        public AuthController(IAuthRepository repo, IConfiguration config)
+
+        public AuthController(IAuthService authService, IConfiguration config)
         {
-            _repo = repo;
+            _authService = authService;
             _config = config;
         }
         
@@ -32,14 +34,11 @@ namespace eatIT.Controllers
 
             userRegisterDto.Username = userRegisterDto.Username.ToLower(); //Convert username to lower case before storing in database.
 
-            if(await _repo.UserExists(userRegisterDto.Username)) 
+            if( _authService.UserExists(userRegisterDto.Username)) 
                 return BadRequest("Username is already taken");
+            
 
-            var userToCreate = new UserEntity{
-                Username = userRegisterDto.Username
-            };
-
-            var createUser = await _repo.Register(userToCreate, userRegisterDto.Password);
+            await _authService.Register(userRegisterDto.Username, userRegisterDto.Password);
 
             return StatusCode(201);
         }
@@ -47,7 +46,7 @@ namespace eatIT.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto userLoginDto)
         {
-            var userFromRepo = await _repo.Login(userLoginDto.Username.ToLower(), userLoginDto.Password);
+            var userFromRepo = await _authService.Login(userLoginDto.Username.ToLower(), userLoginDto.Password);
             if (userFromRepo == null) //User login failed
                 return Unauthorized();
 
@@ -57,7 +56,7 @@ namespace eatIT.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{
-                    new Claim(ClaimTypes.NameIdentifier,userFromRepo.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier,userFromRepo.UserEntityId.ToString()),
                     new Claim(ClaimTypes.Name, userFromRepo.Username)
                 }),
                 Expires = DateTime.Now.AddDays(1),
@@ -67,7 +66,7 @@ namespace eatIT.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { tokenString });
+            return Ok(new { tokenString,userFromRepo.UserEntityId });
         }
     }
 }

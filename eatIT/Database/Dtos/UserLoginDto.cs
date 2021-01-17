@@ -1,4 +1,4 @@
-namespace eatIT.Dtos
+namespace eatIT.Database.Dtos
 {
     public class UserLoginDto
     {

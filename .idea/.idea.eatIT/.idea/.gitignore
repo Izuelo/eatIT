@@ -1,0 +1,13 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/modules.xml
+/contentModel.xml
+/.idea.eatIT.iml
+# Datasource local storage ignored files
+/../../../../../../../../:\Przemek\Projekty\NET core\eatIT\.idea\.idea.eatIT\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
