@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eatIT.Database;
@@ -9,9 +10,10 @@ using eatIT.Database;
 namespace eatIT.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210120093334_likedcom")]
+    partial class likedcom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +39,13 @@ namespace eatIT.Migrations
             modelBuilder.Entity("eatIT.Database.Entity.CommentEntity", b =>
                 {
                     b.Property<int>("CommentEntityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RestaurantEntityId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CommentContent")
                         .HasColumnType("text");
@@ -53,16 +59,10 @@ namespace eatIT.Migrations
                     b.Property<int>("PositiveScore")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RestaurantEntityId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("UserEntityId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CommentEntityId");
+                    b.HasKey("CommentEntityId", "UserEntityId", "RestaurantEntityId");
 
                     b.HasIndex("RestaurantEntityId");
 
@@ -94,9 +94,20 @@ namespace eatIT.Migrations
                     b.Property<int>("UserEntityId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CommentEntityId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CommentEntityRestaurantEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CommentEntityUserEntityId")
+                        .HasColumnType("integer");
+
                     b.HasKey("CommentEntityId", "UserEntityId");
 
                     b.HasIndex("UserEntityId");
+
+                    b.HasIndex("CommentEntityId1", "CommentEntityUserEntityId", "CommentEntityRestaurantEntityId");
 
                     b.ToTable("LikedComments");
                 });
@@ -188,9 +199,6 @@ namespace eatIT.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("bytea");
 
@@ -229,15 +237,15 @@ namespace eatIT.Migrations
 
             modelBuilder.Entity("eatIT.Database.Entity.LikedCommentsEntity", b =>
                 {
-                    b.HasOne("eatIT.Database.Entity.CommentEntity", "CommentEntity")
-                        .WithMany("LikedComments")
-                        .HasForeignKey("CommentEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("eatIT.Database.Entity.UserEntity", "UserEntity")
                         .WithMany("LikedComments")
                         .HasForeignKey("UserEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("eatIT.Database.Entity.CommentEntity", "CommentEntity")
+                        .WithMany("LikedComments")
+                        .HasForeignKey("CommentEntityId1", "CommentEntityUserEntityId", "CommentEntityRestaurantEntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

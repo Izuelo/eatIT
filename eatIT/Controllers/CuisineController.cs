@@ -20,7 +20,7 @@ namespace eatIT.Controllers
         [HttpGet]
         public async Task<IActionResult> GetValues()
         {
-            var values =  _cuisineService.GetAllCuisines();
+             var values =  _cuisineService.GetAllCuisines();
             return Ok(values);
         }
     }

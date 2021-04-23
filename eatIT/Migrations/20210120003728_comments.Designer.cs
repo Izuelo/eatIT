@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eatIT.Database;
@@ -9,9 +10,10 @@ using eatIT.Database;
 namespace eatIT.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210120003728_comments")]
+    partial class comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,37 +38,27 @@ namespace eatIT.Migrations
 
             modelBuilder.Entity("eatIT.Database.Entity.CommentEntity", b =>
                 {
-                    b.Property<int>("CommentEntityId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .UseIdentityByDefaultColumn();
-
-                    b.Property<string>("CommentContent")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("NegativeScore")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("PositiveScore")
+                    b.Property<int>("UserEntityId")
                         .HasColumnType("integer");
 
                     b.Property<int>("RestaurantEntityId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CommentContent")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CommentEntityId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("UserEntityId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CommentEntityId");
+                    b.HasKey("UserEntityId", "RestaurantEntityId");
 
                     b.HasIndex("RestaurantEntityId");
-
-                    b.HasIndex("UserEntityId");
 
                     b.ToTable("Comments");
                 });
@@ -84,21 +76,6 @@ namespace eatIT.Migrations
                     b.HasKey("CuisineEntityId");
 
                     b.ToTable("Cuisines");
-                });
-
-            modelBuilder.Entity("eatIT.Database.Entity.LikedCommentsEntity", b =>
-                {
-                    b.Property<int>("CommentEntityId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UserEntityId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CommentEntityId", "UserEntityId");
-
-                    b.HasIndex("UserEntityId");
-
-                    b.ToTable("LikedComments");
                 });
 
             modelBuilder.Entity("eatIT.Database.Entity.LikedRestaurantsEntity", b =>
@@ -188,9 +165,6 @@ namespace eatIT.Migrations
                         .HasColumnType("integer")
                         .UseIdentityByDefaultColumn();
 
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
                     b.Property<byte[]>("PasswordHash")
                         .HasColumnType("bytea");
 
@@ -223,25 +197,6 @@ namespace eatIT.Migrations
                         .IsRequired();
 
                     b.Navigation("RestaurantEntity");
-
-                    b.Navigation("UserEntity");
-                });
-
-            modelBuilder.Entity("eatIT.Database.Entity.LikedCommentsEntity", b =>
-                {
-                    b.HasOne("eatIT.Database.Entity.CommentEntity", "CommentEntity")
-                        .WithMany("LikedComments")
-                        .HasForeignKey("CommentEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("eatIT.Database.Entity.UserEntity", "UserEntity")
-                        .WithMany("LikedComments")
-                        .HasForeignKey("UserEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CommentEntity");
 
                     b.Navigation("UserEntity");
                 });
@@ -300,11 +255,6 @@ namespace eatIT.Migrations
                     b.Navigation("Restaurants");
                 });
 
-            modelBuilder.Entity("eatIT.Database.Entity.CommentEntity", b =>
-                {
-                    b.Navigation("LikedComments");
-                });
-
             modelBuilder.Entity("eatIT.Database.Entity.CuisineEntity", b =>
                 {
                     b.Navigation("Restaurants");
@@ -322,8 +272,6 @@ namespace eatIT.Migrations
             modelBuilder.Entity("eatIT.Database.Entity.UserEntity", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("LikedComments");
 
                     b.Navigation("Restaurants");
                 });
