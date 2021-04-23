@@ -5,6 +5,7 @@ using eatIT.Database;
 using eatIT.Database.Dtos;
 using eatIT.Database.Entity;
 using eatIT.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace eatIT.Services.Classes
@@ -21,7 +22,9 @@ namespace eatIT.Services.Classes
         public List<RestaurantEntity> GetRestaurantSearchResult(string cityName, string cuisine, int rating)
         {
             var restaurantList= _databaseContext.Restaurants
-                .Where(r=>r.City.CityName==cityName && r.Cuisines.Any(c=>c.CuisineEntity.CuisineName==cuisine)&&r.Rating>= rating).ToList();
+                .Where(r=>r.City.CityName==cityName && r.Cuisines.Any
+                    (c=>c.CuisineEntity.CuisineName==cuisine)&&r.Rating>= rating)
+                .ToList();
             return restaurantList;
         }
 
@@ -34,7 +37,13 @@ namespace eatIT.Services.Classes
 
         public List<RestaurantEntity> GetTopRestaurants(string cityName)
         {
-            var restaurantList= _databaseContext.Restaurants.Where(r=>r.City.CityName==cityName).OrderByDescending(r => r.Rating).Take(10).ToList();
+            var restaurantList= _databaseContext.Restaurants.Where
+                (r=>r.City.CityName==cityName).OrderByDescending(r => r.Rating)
+                .Take(10).ToList();
+            if (!restaurantList.Any())
+            {
+                throw new BadHttpRequestException("Restaurants not found. Please check if city name is correct");
+            }
             return restaurantList;
         }
     }

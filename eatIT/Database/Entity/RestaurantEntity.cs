@@ -32,6 +32,8 @@ namespace eatIT.Database.Entity
         public ICollection<RestaurantCuisinesEntity> Cuisines { get; set; }
         
         public ICollection<LikedRestaurantsEntity> Users { get; set; }
+        
+        public ICollection<CommentEntity> Comments { get; set; }
 
 
         public RestaurantEntity(int restaurantEntityId, string name, string address, string locality, string latitude,
